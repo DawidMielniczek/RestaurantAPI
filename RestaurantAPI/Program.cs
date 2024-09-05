@@ -46,8 +46,10 @@ builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
 builder.Host.UseNLog();
 
+// Dodawane JWT
 var authenticationSettings = new AuthenticationSettings();
 builder.Configuration.GetSection("Authentication").Bind(authenticationSettings);
+builder.Services.AddSingleton(authenticationSettings);
 
 builder.Services.AddAuthentication(option =>
 {
@@ -57,7 +59,7 @@ builder.Services.AddAuthentication(option =>
 }).AddJwtBearer(cfg =>
 {
     cfg.RequireHttpsMetadata = false; // 
-    cfg.SaveToken = true; // powinen zostaæ zapisany do celów autentykacji
+    cfg.SaveToken = true; // powin zostaæ zapisany do celów autentykacji
     cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidIssuer = authenticationSettings.JwtIssuer,
