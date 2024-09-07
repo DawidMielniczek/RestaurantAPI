@@ -20,6 +20,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+// Dodanie polityki sprawdzajacej czy dany uzytkownik ustawi³ narodowoœæ 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "German", "Polish"));
+});
+
 builder.Services.AddControllers().AddFluentValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
@@ -59,7 +65,7 @@ builder.Services.AddAuthentication(option =>
 }).AddJwtBearer(cfg =>
 {
     cfg.RequireHttpsMetadata = false; // 
-    cfg.SaveToken = true; // powin zostaæ zapisany do celów autentykacji
+    cfg.SaveToken = true; // powinien zostaæ zapisany do celów autentykacji
     cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidIssuer = authenticationSettings.JwtIssuer,
