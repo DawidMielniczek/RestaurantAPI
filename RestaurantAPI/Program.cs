@@ -1,11 +1,13 @@
 
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
 using RestaurantAPI;
+using RestaurantAPI.Authorization;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Middleware;
 using RestaurantAPI.Models;
@@ -24,6 +26,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "German", "Polish"));
+    options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumAgeRequirment(20)));
 });
 
 builder.Services.AddControllers().AddFluentValidation();
@@ -31,7 +34,7 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>();
 
 
-
+builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirmentHandler>();
 builder.Services.AddDbContext<RestaurantDbContext>();
 builder.Services.AddScoped<RestaurantSeeder>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
