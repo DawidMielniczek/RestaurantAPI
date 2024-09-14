@@ -27,6 +27,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "German", "Polish"));
     options.AddPolicy("Atleast20", builder => builder.AddRequirements(new MinimumAgeRequirment(20)));
+    options.AddPolicy("TwoOrMore", builder => builder.AddRequirements(new CreatedMultipleRestaurants(2)));
 });
 
 builder.Services.AddControllers().AddFluentValidation();
@@ -36,6 +37,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<RegisterUserDtoValidator>()
 // Add authorizations dependency 
 builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirmentHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, CreatedMultipleRestaurantsHandler>();
+
 
 builder.Services.AddDbContext<RestaurantDbContext>();
 builder.Services.AddScoped<RestaurantSeeder>();
