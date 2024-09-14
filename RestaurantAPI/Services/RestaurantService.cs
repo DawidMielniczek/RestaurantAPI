@@ -18,7 +18,7 @@ namespace RestaurantAPI.Services
         private readonly IAuthorizationService _authorizationService;
         private readonly IUserContextService _userContextService;
 
-        public RestaurantService(RestaurantDbContext dbContext, IMapper mapper, ILogger<RestaurantService> logger, IAuthorizationService authorizationService, IUserContextService userContextService) 
+        public RestaurantService(RestaurantDbContext dbContext, IMapper mapper, ILogger<RestaurantService> logger, IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -44,12 +44,15 @@ namespace RestaurantAPI.Services
             return result;
         }
 
-        public IEnumerable<RestaurantDto> GetAll() 
+        public IEnumerable<RestaurantDto> GetAll(string searchPhrase)
         {
             var restaurants = _dbContext
               .Restaurants
               .Include(r => r.Address)
               .Include(d => d.Dishes)
+              .Where(c => searchPhrase == null || 
+                  c.Name.ToLower().Contains(searchPhrase) ||
+                  c.Description.ToLower().Contains(searchPhrase))
               .ToList();
             var restaurantDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
 

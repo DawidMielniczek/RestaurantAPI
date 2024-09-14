@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Models;
 using RestaurantAPI.Services;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace RestaurantAPI.Controllers
@@ -23,17 +24,17 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy ="TwoOrMore")]
-        public ActionResult<IEnumerable<RestaurantDto>> GetAll()
+        [AllowAnonymous]
+        public ActionResult<IEnumerable<RestaurantDto>> GetAll([FromQuery]string? searchPhrase)
         {
-            var restaurants = _restaurantService.GetAll();
+            var restaurants = _restaurantService.GetAll(searchPhrase);
 
             return Ok(restaurants);
         }
 
         [HttpGet]
         [Route("{id}")]
-        [AllowAnonymous]
+        [Authorize(Policy = "TwoOrMore")]
         public ActionResult <RestaurantDto> Get([FromRoute] int id)
         {
             var restaurant = _restaurantService.GetById(id);
