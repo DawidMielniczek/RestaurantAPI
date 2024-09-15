@@ -12,6 +12,7 @@ using System.Security.Claims;
 namespace RestaurantAPI.Controllers
 {
     [Route("api/Restaurant")]
+    [ApiController]
     [Authorize]
     public class RestaurantController : ControllerBase
     {
