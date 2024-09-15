@@ -12,7 +12,6 @@ using System.Security.Claims;
 namespace RestaurantAPI.Controllers
 {
     [Route("api/Restaurant")]
-    [ApiController]
     [Authorize]
     public class RestaurantController : ControllerBase
     {
@@ -25,9 +24,9 @@ namespace RestaurantAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult<IEnumerable<RestaurantDto>> GetAll([FromQuery]string? searchPhrase)
+        public ActionResult<IEnumerable<RestaurantDto>> GetAll([FromQuery] RestaurantQuery query)
         {
-            var restaurants = _restaurantService.GetAll(searchPhrase);
+            var restaurants = _restaurantService.GetAll(query);
 
             return Ok(restaurants);
         }

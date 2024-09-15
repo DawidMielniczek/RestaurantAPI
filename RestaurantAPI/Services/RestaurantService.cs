@@ -44,19 +44,28 @@ namespace RestaurantAPI.Services
             return result;
         }
 
-        public IEnumerable<RestaurantDto> GetAll(string searchPhrase)
+        public PageResult<RestaurantDto> GetAll(RestaurantQuery query)
         {
-            var restaurants = _dbContext
+            var baseQuery = _dbContext
               .Restaurants
               .Include(r => r.Address)
               .Include(d => d.Dishes)
-              .Where(c => searchPhrase == null || 
-                  c.Name.ToLower().Contains(searchPhrase) ||
-                  c.Description.ToLower().Contains(searchPhrase))
+              .Where(c => query.SearchPhrase == null ||
+                  c.Name.ToLower().Contains(query.SearchPhrase.ToLower()) ||
+                  c.Description.ToLower().Contains(query.SearchPhrase.ToLower()));
+
+            var restaurants = baseQuery
+              .Skip(query.PageSize *(query.PageNumber -1 ))
+              .Take(query.PageSize)
               .ToList();
+
+            var totalItemsCount = baseQuery.Count();
+
             var restaurantDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
 
-            return restaurantDtos;
+            var result = new PageResult<RestaurantDto>(restaurantDtos, totalItemsCount , query.PageSize, query.PageNumber);
+
+            return result;
         }
 
         public int Create(CreateRestaurantDto dto)
