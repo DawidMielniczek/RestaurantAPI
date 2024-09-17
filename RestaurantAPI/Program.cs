@@ -60,6 +60,8 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<RestaurantQuery>, RestaurantQueryValidator>();
 
+
+
 //Add nLogera
 builder.Logging.ClearProviders();
 builder.Logging.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
@@ -87,11 +89,22 @@ builder.Services.AddAuthentication(option =>
     };
 });
 
+// Add Cors
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontEndClient", policyBuilder =>
+    policyBuilder.AllowAnyMethod()
+    .AllowAnyHeader()
+    .WithOrigins(builder.Configuration["AllowedOrigins"])   
+    );
+});
 
 //add Swagger
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseCors("FrontEndClient");
 
 var scope = app.Services.CreateScope();
 var seeder = scope.ServiceProvider.GetService<RestaurantSeeder>();
