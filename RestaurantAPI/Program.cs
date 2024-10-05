@@ -3,6 +3,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.IdentityModel.Tokens;
 using NLog.Web;
@@ -39,8 +40,10 @@ builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirmentHandler>()
 builder.Services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
 builder.Services.AddScoped<IAuthorizationHandler, CreatedMultipleRestaurantsHandler>();
 
+//add connection from database
 
-builder.Services.AddDbContext<RestaurantDbContext>();
+
+
 builder.Services.AddScoped<RestaurantSeeder>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
@@ -98,6 +101,9 @@ builder.Services.AddCors(options =>
     .WithOrigins(builder.Configuration["AllowedOrigins"])   
     );
 });
+
+builder.Services.AddDbContext<RestaurantDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("RestaurantDbConnection")));
+
 
 //add Swagger
 builder.Services.AddSwaggerGen();
