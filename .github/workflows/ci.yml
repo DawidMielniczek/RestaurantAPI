@@ -7,18 +7,18 @@ on:
       - master-pipeline
   workflow_dispatch:
   
-  fork:
-    build:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v2
-        - name: Setup .NET Core SDK
-          uses: actions/setup-dotnet@v4.0.1
-          with:
-            dotnet-version: 8.0.x  # Upewnij się, że wcięcie jest poprawne
-        - name: Restore dependencies
-          run: dotnet restore
-        - name: Build
-          run: dotnet build --no-restore
-        - name: Test
-          run: dotnet test
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core SDK
+        uses: actions/setup-dotnet@v4.0.1
+        with:
+          dotnet-version: 8.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test
