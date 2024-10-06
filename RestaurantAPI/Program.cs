@@ -23,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-// Dodanie polityki sprawdzajacej czy dany uzytkownik ustawi³ narodowoœæ 
+// Dodanie polityki sprawdzajacej czy dany uzytkownik ustawiï¿½ narodowoï¿½ï¿½ 
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "German", "Polish"));
@@ -58,7 +58,7 @@ builder.Services.AddScoped<RequestTimeMiddleware>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddHttpContextAccessor();
 
-// Add validator i hasher has³a
+// Add validator i hasher hasï¿½a
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<RestaurantQuery>, RestaurantQueryValidator>();
@@ -83,7 +83,7 @@ builder.Services.AddAuthentication(option =>
 }).AddJwtBearer(cfg =>
 {
     cfg.RequireHttpsMetadata = false; // 
-    cfg.SaveToken = true; // powinien zostaæ zapisany do celów autentykacji
+    cfg.SaveToken = true; // powinien zostaÄ‡ zapisany do celÃ³w autentykacji.
     cfg.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
     {
         ValidIssuer = authenticationSettings.JwtIssuer,
